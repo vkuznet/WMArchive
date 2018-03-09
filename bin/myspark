@@ -17,6 +17,8 @@ wmaspark=$wmaroot/Tools/myspark.py
 # enable simple secret to run in non-yarn mode
 conf="--conf spark.authenticate.secret=wmarchive --conf spark.yarn.security.tokens.hive.enabled=false --conf spark.driver.port=5001 --conf spark.blockManager.port=5101 --conf spark.ui.port=5201"
 
+# set initial config with some string
+conf="--conf spark.authenticate.secret=wmatest"
 # allow to disable spark output, client should setup his/her own log4j.properties
 # via WMA_LOG4J environment variable
 conf="--conf spark.authenticate.secret=wmarchive --conf spark.driver.port=5001 --conf spark.blockManager.port=5101 --conf spark.ui.port=5201"
