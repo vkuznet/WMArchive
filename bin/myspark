@@ -12,9 +12,11 @@ fi
 
 # find out where WMArchive is installed on a system
 wmaroot=`python -c "import WMArchive; print '/'.join(WMArchive.__file__.split('/')[:-1])"`
+wmaspark=$wmaroot/Tools/myspark.py
 
-# set initial config with some string
-conf="--conf spark.authenticate.secret=wmatest"
+# enable simple secret to run in non-yarn mode
+conf="--conf spark.authenticate.secret=wmarchive --conf spark.yarn.security.tokens.hive.enabled=false --conf spark.driver.port=5001 --conf spark.blockManager.port=5101 --conf spark.ui.port=5201"
+
 # allow to disable spark output, client should setup his/her own log4j.properties
 # via WMA_LOG4J environment variable
 conf="--conf spark.authenticate.secret=wmarchive --conf spark.driver.port=5001 --conf spark.blockManager.port=5101 --conf spark.ui.port=5201"
@@ -92,7 +94,7 @@ fi
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ] || [ "$1" == "-help" ]; then
     # run help
-    python $wmaroot/Tools/myspark.py --help
+    python $wmaspark --help
 elif [[  $1 =~ -?-yarn(-cluster)?$ ]]; then
     # to tune up these numbers:
     #  - executor-memory not more than 5G
@@ -105,7 +107,7 @@ elif [[  $1 =~ -?-yarn(-cluster)?$ ]]; then
             --master yarn-client \
             --driver-class-path '/usr/lib/hive/lib/*' \
             --driver-java-options '-Dspark.executor.extraClassPath=/usr/lib/hive/lib/*' \
-            $conf $wmaroot/Tools/myspark.py ${1+"$@"}
+            $conf $wmaspark ${1+"$@"}
 else
     # submit spark job with our file, please note
     # that user may increase memory options if necessary
@@ -121,7 +123,7 @@ else
         --master local[$((`nproc`/4))] \
         --driver-class-path '/usr/lib/hive/lib/*' \
         --driver-java-options '-Dspark.executor.extraClassPath=/usr/lib/hive/lib/*' \
-        $conf $wmaroot/Tools/myspark.py ${1+"$@"}
+        $conf $wmaspark ${1+"$@"}
 # Original example
 # submit spark job with our file, please note
 # that user may increase memory options if necessary
